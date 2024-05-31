@@ -8,7 +8,7 @@ solver.parameters.log_search_progress = True
 solver.parameters.log_to_response     = True
 </code></pre>
 
-CSV table schema, where objective1 == objective2
+CSV table schema, where objective1 == objective2 (corresponding time and bound)
 <pre><code>
 [
 'Date', 'ModelName', 'Objective', 'UserTime', '#Booleans', '#Branches', '#Conflicts', 'SolverParameters', 'SolverLog',
