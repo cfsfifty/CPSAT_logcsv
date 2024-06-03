@@ -1,5 +1,6 @@
-import collections
-import math 
+''' 
+    05.2024, Christoph Fuenfzig
+'''
 from   SolverStatsCSV import SolverStatsCSV
 from   ortools.sat.python import cp_model 
 
