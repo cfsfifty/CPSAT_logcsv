@@ -33,8 +33,8 @@ class SolverStatsCSV:
 
     @staticmethod
     def sol_gap (bound, objective, domain_bound):
-        ''' Solution gap from (current bound, current objective). Optimality gap would use optimal objective,
-            which is not known yet.
+        ''' Solution gap from (current bound, current objective). Optimality gap would use 
+            current objective and optimal objective, which is not known yet.
             domain_bound is upper bound after presolving. '''
         return (float(objective)-float(bound))/float(objective)
 
