@@ -22,7 +22,7 @@ responseString = str(solver.ResponseProto())
 </code></pre>
 
 Returned as a time-ordered list log_list = [ (time, bound, objective, gapInPercent) ].
-Please see testCircles_FromLog.py for an example application.
+Please see the example testCircles_FromLog.py.
 
 <pre><code>
 log_list = csv.write_stats(solver, "circles_%d_%d" % (num_circles_dim, radius_circles), responseString)
