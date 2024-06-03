@@ -79,14 +79,14 @@ class SolverStatsCSV:
                         #out   = ""
                         for word in line.split(' '):
                             # prefix
-                            if re.match("#(\d+)", word) or re.match("#Bound", word):
+                            if re.match(r"#(\d+)", word) or re.match(r"#Bound", word):
                                 state = 1
-                            if re.match("#Done", word):
+                            if re.match(r"#Done", word):
                                 state = 2
                             # later word
                             if state > 0:
                                 #print(word, " state line")
-                                z = re.match("([\d\.]+)s", word)
+                                z = re.match(r"([\d\.]+)s", word)
                                 if z:
                                     #print(z.groups()[0])
                                     value = int(math.floor(float(z.groups()[0])*1000.0)) # s to ms
@@ -99,7 +99,7 @@ class SolverStatsCSV:
                                             value = time[-1] 
                                     time[-1] = value
                                 else:
-                                    z = re.match("next:\[(\d+),(\d+)\]", word)
+                                    z = re.match(r"next:\[(\d+),(\d+)\]", word)
                                     if z:
                                         #print(z.groups)
                                         bound[-1]     = int(z.groups()[0])
@@ -108,7 +108,7 @@ class SolverStatsCSV:
                                             # get domain bound after presolving
                                             domain_bound = objective[-1]
                                     else: # line '#(\d+) next:[] .*'
-                                        z = re.match("next:\[\]", word)
+                                        z = re.match(r"next:\[\]", word)
                                         if z:
                                             state = 2
                         if state > 0:
