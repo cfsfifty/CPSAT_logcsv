@@ -26,7 +26,12 @@ class SolverStatsCSV:
             with open(self.csv_filename, 'w', newline='') as csv_file:
                 csv_out = csv.DictWriter(csv_file, fieldnames = self.csv_header, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
                 csv_out.writeheader()
-        
+
+    @staticmethod
+    def sol_gap (bound, objective, domain_bound):
+        return (float(objective)-float(bound))/float(objective)
+
+
     def write_stats (self, cpsat_solver : cp_model.CpSolver, modelname : str, log_string : str) -> list:
         # all (newline, line-feed) with german formatting
         #locale.setlocale(locale.LC_ALL,     'de_DE.utf8')
@@ -101,17 +106,13 @@ class SolverStatsCSV:
                                             state = 2
                         if state > 0:
                             if state == 1:
-                                gap = (float(objective[-1])-float(bound[-1]))/float(objective[-1])
-                                stats_file.append((time[-1], bound[-1], objective[-1], gap*100))
+                                stats_file.append((time[-1], bound[-1], objective[-1], SolverStatsCSV.sol_gap(bound[-1], objective[-1], domain_bound)*100))
                                 # add entries for next line
                                 time .append(time[-1])  # last time
                                 bound.append(bound[-1]) # last bound
                                 objective.append(objective[-1]) # last upper bound
                             if state == 2:
-                                # if #Done is reached then bound=objective
-                                #bound[-1] = objective[-1]
-                                gap = (float(objective[-1])-float(bound[-1]))/float(objective[-1])
-                                stats_file.append((time[-1], bound[-1], objective[-1], gap*100))
+                                stats_file.append((time[-1], bound[-1], objective[-1], SolverStatsCSV.sol_gap(bound[-1], objective[-1], domain_bound)*100))
                                 break
 
                 # "\r\n"
