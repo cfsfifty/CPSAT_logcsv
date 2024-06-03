@@ -3,19 +3,22 @@ import math
 from   SolverStatsCSV import SolverStatsCSV
 from   ortools.sat.python import cp_model 
 
+# CPSAT model
 model = cp_model.CpModel()
 
-unit           = 100
 num_circles_dim = 5
+# use one-hundreth(1/100)
+unit            = 100
+# everything in unit
 radius_circles  = 1*unit
 size_area       = num_circles_dim*unit
 
 def constraints_distance (dx, dy, r1, r2):
-    ddx = model.NewIntVar(0, size_area*size_area, 'ddx_local')
-    ddy = model.NewIntVar(0, size_area*size_area, 'ddy_local')
-    model.AddMultiplicationEquality(ddx, [dx, dx])
-    model.AddMultiplicationEquality(ddy, [dy, dy])
-    model.Add(ddx + ddy >= r1*r1+r2*r2)
+    sdx = model.NewIntVar(0, size_area*size_area, 'sdx_local')
+    sdy = model.NewIntVar(0, size_area*size_area, 'sdy_local')
+    model.AddMultiplicationEquality(sdx, [dx, dx])
+    model.AddMultiplicationEquality(sdy, [dy, dy])
+    model.Add(sdx + sdy >= r1*r1+r2*r2)
 
 
 coordx  = []
@@ -27,8 +30,8 @@ for j in range(num_circles_dim):
         coordy.append(model.NewIntVar(0, size_area, 'y_%d_%d' % (i, j)))
         if i == num_circles_dim-1:
             border.append(coordx[-1])
-
 border.extend(coordy[-num_circles_dim:])
+
 for j in range(num_circles_dim):
     for i in range(num_circles_dim):
         if i == 0 and j == 0: # fix circle 0 to (0, 0)
@@ -77,19 +80,15 @@ solver = cp_model.CpSolver()
 solver.parameters.num_workers = 16
 solver.parameters.linearization_level = 1
 solver.parameters.log_search_progress = True
-#solver.parameters.log_to_stdout       = True
+solver.parameters.log_to_stdout       = False
 solver.parameters.log_to_response     = True
 solver.parameters.cp_model_presolve   = True
-#print(solver.status_name())
+
 status = solver.Solve(model)
 #print(solver.status_name())
 
 
 ##################################################################################
-# CHECK RESULT
-if status != cp_model.OPTIMAL and status != cp_model.FEASIBLE:
-    print('No solution found.')
-    
 # Statistics
 print('\nStatistics')
 print(f'Optimal border-sum: {solver.ObjectiveValue()}')
@@ -97,6 +96,10 @@ print(' - conflicts: %i' % solver.NumConflicts())
 print(' - branches : %i' % solver.NumBranches())
 print(' - wall time: %fs' % solver.WallTime())
 
+# CHECK RESULT
+if status != cp_model.OPTIMAL and status != cp_model.FEASIBLE:
+    print('No solution found.')
+    exit(1)    
 
 ##################################################################################
 # SOLUTION
