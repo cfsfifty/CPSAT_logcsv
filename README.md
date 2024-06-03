@@ -17,10 +17,14 @@ CSV table schema, where objective1 == objective2 (and corresponding time and bou
 </code></pre>
 
 Additionally, get the bound/objective history from the CP-SAT log response string after solving.
-Returned as a time-ordered list (time, bound, objective, gap[%]).
-
 <pre><code>
 responseString = str(solver.ResponseProto())
 </code></pre>
 
-Please see the example testCircles_FromLog.py.
+Returned as a time-ordered list log_list = [ (time, bound, objective, gapInPercent) ].
+Please see testCircles_FromLog.py for an example application.
+
+<pre><code>
+log_list = csv.write_stats(solver, "circles_%d_%d" % (num_circles_dim, radius_circles), responseString)
+</code></pre>
+
