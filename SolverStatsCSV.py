@@ -1,3 +1,7 @@
+''' 
+    Evaluation of CPSAT solver results and log.
+    01.2024, Christoph Fuenfzig
+'''
 import csv
 import sys
 import os
