@@ -12,8 +12,7 @@ import math
 from ortools.sat.python import cp_model
 
 class SolverStatsCSV:
-    ''' Write solver stats to a CSV file csv_filename. Additionally, get bound/objective history from log response string.
-        Returned as time-ordered list. '''
+    ''' Write solver stats to a CSV file csv_filename, managed by this class. '''
     def __init__ (self, csv_filename : str):
         self.csv_filename = csv_filename
         self.csv_header   = ['Date', 'ModelName', 'Objective', 'UserTime', '#Booleans', '#Branches', '#Conflicts', 'SolverParameters', 'SolverLog', 'time1', 'bound1', 'objective1', 'time2', 'bound2', 'objective2' ]
@@ -40,6 +39,8 @@ class SolverStatsCSV:
 
 
     def write_stats (self, cpsat_solver : cp_model.CpSolver, modelname : str, log_string : str) -> list:
+        ''' Write solver stats to CSV file. Additionally, get bound/objective/sol_gap history from log_string.
+            Return a time-ordered list (time, bound, objective, sol_gap). '''
         # all (newline, line-feed) with german formatting
         #locale.setlocale(locale.LC_ALL,     'de_DE.utf8')
         # numeric always with american formatting
@@ -122,7 +123,7 @@ class SolverStatsCSV:
                                 stats_file.append((time[-1], bound[-1], objective[-1], SolverStatsCSV.sol_gap(bound[-1], objective[-1], domain_bound)*100))
                                 break
 
-                # "\r\n"
+                # "\r\n", perhaps Windows only?
                 log_string = log_string[log_string.find("obj") : -1].replace("\n", "\r\n")
                 #print(log_string)
                 row[self.csv_header[8]] = log_string
