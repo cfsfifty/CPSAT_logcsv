@@ -123,23 +123,26 @@ class SolverStatsCSV:
                                 stats_file.append((time[-1], bound[-1], objective[-1], SolverStatsCSV.sol_gap(bound[-1], objective[-1], domain_bound)*100))
                                 break
 
-                # "\r\n", perhaps Windows only?
-                log_string = log_string[log_string.find("obj") : -1].replace("\n", "\r\n")
+                log_string = log_string[log_string.find("obj") : -1]
+                # "\r" -> "\r\n"
+                log_string = log_string.replace("\n", "\r\n")
                 #print(log_string)
                 row[self.csv_header[8]] = log_string
 
                 assert(len(objective) == len(bound))
                 assert(len(objective) == len(time))
                 if len(objective) > 1:
-                    # find lower bounds at min objective (especially first lower bound)
+                    # find lower bounds at optimal objective (especially first lower bound)
                     index_bounds = [ i for i in range(-1, -len(objective), -1) if objective[i] == objective[-1] ]
                     row[self.csv_header[9]]  = time [index_bounds[-1]]
                     row[self.csv_header[10]] = bound[index_bounds[-1]]     # first lower bound
                     row[self.csv_header[11]] = objective[index_bounds[-1]]
                 else:
+                    # copy last entry (last lower bound, optimal objective)
                     row[self.csv_header[9]]  = time [-1]
                     row[self.csv_header[10]] = bound[-1]
                     row[self.csv_header[11]] = objective[-1]
+                # last entry (last lower bound, optimal objective)
                 row[self.csv_header[12]] = time [-1]
                 row[self.csv_header[13]] = bound[-1]
                 row[self.csv_header[14]] = objective[-1]
